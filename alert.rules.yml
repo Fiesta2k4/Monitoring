@@ -1,0 +1,20 @@
+groups:
+  - name: backend-alerts
+    rules:
+      - alert: TooManyHTTPRequests
+        expr: sum(rate(http_requests_total{path="/api/todos"}[10s])) > 1
+        for: 0s
+        labels:
+          severity: warning
+        annotations:
+          summary: "High HTTP request rate detected"
+          description: "The backend service is receiving more request than usual."
+
+      - alert: BackendDown
+        expr: up{job="backend"} == 0
+        for: 5s
+        labels:
+          severity: critical
+        annotations:
+          summary: "Backend is down"
+          description: "Job 'backend' has been DOWN for more than 10 seconds."
